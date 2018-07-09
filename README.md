@@ -22,7 +22,8 @@ Search all specs for systems containing x3430 CPUs
 
 ### About
 
--
+See this blog for instructions
+https://eightwone.com/2014/09/02/exchange-processor-query-tool-posh-edition/
 
 ## License
 
