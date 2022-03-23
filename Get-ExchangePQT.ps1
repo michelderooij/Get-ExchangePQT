@@ -9,7 +9,7 @@
     THIS CODE IS MADE AVAILABLE AS IS, WITHOUT WARRANTY OF ANY KIND. THE ENTIRE 
     RISK OF THE USE OR THE RESULTS FROM THE USE OF THIS CODE REMAINS WITH THE USER.
 	
-    Version 1.2, July 9th, 2018
+    Version 1.3, March 23rd, 2022
     
     .DESCRIPTION
     The script is an alternative to the Processor Query Tool and automates the steps 
@@ -43,6 +43,7 @@
     1.2     Renamed to Get-ExchangePQT
             Changed Published to [datetime] for sorting
             Code cleanup
+    1.3     Added SPECInt2017 switch to support Exchange 2019 sizing
     
     .PARAMETER CPU
     Filter on processor name (partial matching).
@@ -94,6 +95,9 @@
 
     .PARAMETER vCPU
     Specify the number of vCPU allocated. Default is the number of cores of the system.
+
+    .PARAMETER SPECint2017
+    Switch to specify the script should use SPECint2017 ratings.
 
     .EXAMPLE
     Calculate the average SpecInt rate for 20 core systems containing an E5-2670 CPU
@@ -168,7 +172,10 @@ param(
 	[parameter( Mandatory=$false, ParameterSetName='Default')]
 	[parameter( Mandatory=$true, ParameterSetName="ChipsMax")]
         [ValidateRange(0,999)]
-        [int]$MaxChips=999
+        [int]$MaxChips=999,
+	[parameter( Mandatory=$false, ParameterSetName='Default')]
+	[parameter( Mandatory=$false, ParameterSetName="ChipsMax")]
+        [switch]$SPECint2017
     )
 
 process {
@@ -181,7 +188,14 @@ process {
     }
 
     # Construct URL
-    $URL= "http://www.spec.org/cgi-bin/osgresults?conf=rint2006&op=dump;format=csvdump&proj-BASE=0&proj-COPIES=0&proj-CPU_MHZ=256"
+    If( $SPECint2017) {
+        $URL= "http://www.spec.org/cgi-bin/osgresults?conf=rint2017&op=dump;format=csvdump&proj-BASE=0&proj-COPIES=0&proj-CPU_MHZ=256"
+        $SPECint= 'SPECint2017'
+    }
+    Else {
+        $URL= "http://www.spec.org/cgi-bin/osgresults?conf=rint2006&op=dump;format=csvdump&proj-BASE=0&proj-COPIES=0&proj-CPU_MHZ=256"
+        $SPECint= 'SPECint2006'
+    }
 
     If( $Vendor) {
         $URL+= "&proj-COMPANY=256&critop-COMPANY=0&crit-COMPANY=$Vendor"
@@ -201,7 +215,7 @@ process {
         $MaxChips= $Chips
     }
 
-    Write-Verbose ('Querying SpecInt2006 information (Chips: {0}-{1} Cores: {2}-{3})' -f $MinChips, $MaxChips, $MinCores, $MaxCores)
+    Write-Verbose ('Querying {4} information (Chips: {0}-{1} Cores: {2}-{3})' -f $MinChips, $MaxChips, $MinCores, $MaxCores, $SPECint)
 
     # Disable progress bar to speed up downloading ..
     $OldProgress= $ProgressPreference
