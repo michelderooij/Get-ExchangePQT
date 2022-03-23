@@ -247,7 +247,7 @@ process {
 
     # Specify default display properties
     $defaultProps= @('Vendor','System','Cores','Chips','CoresPerChip','Speed','Result','Published')
-    $defaultDisplayPropertySet = New-Object System.Management.Automation.PSPropertySet(‘DefaultDisplayPropertySet’,[string[]]$defaultProps)
+    $defaultDisplayPropertySet = New-Object System.Management.Automation.PSPropertySet("DefaultDisplayPropertySet",[string[]]$defaultProps)
     $PSStandardMembers = [System.Management.Automation.PSMemberInfo[]]@($defaultDisplayPropertySet)
 
     Write-Verbose "$($Data.Count) number of potential entries found, narrowing results .."
