@@ -9,7 +9,7 @@
     THIS CODE IS MADE AVAILABLE AS IS, WITHOUT WARRANTY OF ANY KIND. THE ENTIRE 
     RISK OF THE USE OR THE RESULTS FROM THE USE OF THIS CODE REMAINS WITH THE USER.
 	
-    Version 1.3, March 23rd, 2022
+    Version 1.31, August 7th, 2025
     
     .DESCRIPTION
     The script is an alternative to the Processor Query Tool and automates the steps 
@@ -44,6 +44,7 @@
             Changed Published to [datetime] for sorting
             Code cleanup
     1.3     Added SPECInt2017 switch to support Exchange 2019 sizing
+    1.31    Fixed Cores/Chip for SpecInt2017 output
     
     .PARAMETER CPU
     Filter on processor name (partial matching).
@@ -273,7 +274,7 @@ process {
                     'Speed'=$_.'Processor MHz';
                     'Cores'= $ThisCores;
                     'Chips'=$ThisChips;
-                    'CoresPerChip'=$_.'# Cores Per Chip';
+                    'CoresPerChip'= $ThisCores / $ThisChips
                     'OS'=$_.'Operating System';
                     'Result'= $Result;
 		    'ResultPerCore'= $ResultPerCore;
